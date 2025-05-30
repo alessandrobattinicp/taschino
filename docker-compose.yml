@@ -1,0 +1,10 @@
+services:
+  node:
+    image: postgres
+    ports:
+      - 5432:5432
+    container_name: taschino-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: taschino
+      POSTGRES_DB: taschino
