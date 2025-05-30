@@ -35,7 +35,7 @@ async fn hello(pool: Data<Pool<Postgres>>, req: Json<UrlData>) -> impl Responder
 
 #[get("/")]
 async fn get_urls(pool: Data<Pool<Postgres>>) -> Result<HttpResponse, Error> {
-    let urls = sqlx::query_as::<_, UrlData>("SELECT * FROM urls")
+    let urls = sqlx::query_as::<_, UrlData>("SELECT url,image as image_base64 FROM urls")
         .fetch_all(pool.get_ref())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
