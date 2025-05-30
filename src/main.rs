@@ -3,6 +3,7 @@
 POST /url
 {
     "url": "https://example.com",
+    prova
 }
 */
 use actix_web::{
@@ -15,7 +16,7 @@ use sqlx::{FromRow, Pool, Postgres, postgres::PgPoolOptions};
 #[derive(Deserialize, Serialize, FromRow)]
 struct UrlData {
     url: String,
-    image_base64: String
+    image_base64: String,
 }
 
 #[post("/")]
@@ -24,10 +25,13 @@ async fn hello(pool: Data<Pool<Postgres>>, req: Json<UrlData>) -> impl Responder
         .bind(&req.url)
         .bind(&req.image_base64)
         .execute(pool.get_ref())
-        .await{
-            Ok(res) => res,
-            Err(error) => return HttpResponse::from_error(actix_web::error::ErrorInternalServerError(error))
-        };
+        .await
+    {
+        Ok(res) => res,
+        Err(error) => {
+            return HttpResponse::from_error(actix_web::error::ErrorInternalServerError(error));
+        }
+    };
 
     println!("Received request: {}", req.url);
     HttpResponse::Created().body("Hello world!")
