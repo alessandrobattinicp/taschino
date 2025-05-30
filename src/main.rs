@@ -65,6 +65,11 @@ async fn main() -> std::io::Result<()> {
         .await
         .unwrap();
 
+    match sqlx::migrate!().run(&pool).await {
+        Ok(_) => println!("TABLES CREATED SUCCESSFULLY"),
+        Err(err) => panic!("ERROR DURING TABLES CREATION: {}", err),
+    };
+
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(pool.clone()))
